@@ -1,0 +1,16 @@
+diff --git a/dkms b/dkms
+old mode 100644
+new mode 100755
+index b5ffa30..c327400
+--- a/dkms
++++ b/dkms
+@@ -692,6 +692,9 @@ read_conf()
+ 
+     # Get the correct make command
+     [[ ${MAKE_MATCH[0]} ]] || make_command="${MAKE[0]}"
++    if sed -n 's/^[^\(]*[(][^\)]*[)][ ]*[^\(]*[(]\([^\)]*\)[)].*/\1/p' /proc/version | grep -q clang ; then
++        make_command="make V=1 CC=clang CXX=clang++ LD=ld.lld AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJSIZE=llvm-size STRIP=llvm-strip"
++    fi
+     for ((index=0; index < ${#MAKE[@]}; index++)); do
+     [[ ${MAKE[$index]} && ${MAKE_MATCH[$index]} && \
+         $1 =~ ${MAKE_MATCH[$index]} ]] && \
